@@ -10,7 +10,9 @@
 
 # 🤔 About
 
-KeydropPlusAutoCodes automatically searches for gold codes from Telegram and enters them on key-drop.com.
+KeydropPlusAutoCodes automatically searches for gold codes from [Telegram](https://web.telegram.org) and enters them on [key-drop.com](https://key-drop.com/).
+
+This script requires logging in to Telegram **using a phone number** with a code.
 
 
 ## 🌍 Available languages
@@ -19,9 +21,14 @@ KeydropPlusAutoCodes automatically searches for gold codes from Telegram and ent
 
 
 ## 🛠️ Configuration
+Configuration variables can be found in the file: "**.env**".
 
+- **API_ID** - To get the API ID you need to [create a new app](https://my.telegram.org/apps).
+- **API_HASH** - To get the API HASH you need to [create a new app](https://my.telegram.org/apps).
+- **CHANNELS_ID** - Channels to listening ([KeyDrop Chat](https://t.me/keydropchat) - 1684212463).
 
-## 🛠️ Configuration
+- **BROWSER_PATH** - Path to the selected browser (on most OS can be left empty)
+- **CUSTOM_USER_AGENT** - Custom user agent
 
 
 ## 🔥 Screenshots
