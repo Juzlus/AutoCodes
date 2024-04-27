@@ -1,5 +1,5 @@
 
-<img width="2200px" src="https://raw.githubusercontent.com/Juzlus/KeydropPlus/main/data/icons/Keydrop%2B_Icon.svg">
+<img width="2200px" src="/img/logo.png">
 
 <div align="center">
   <a href="https://GitHub.com/Juzlus/KeydropPlusAutoCodes/releases/"><img alt="GitHub release" src="https://img.shields.io/github/release/Juzlus/KeydropPlusAutoCodes.svg?style=social"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
