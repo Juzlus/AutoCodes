@@ -23,6 +23,7 @@ if %errorlevel% neq 0 (
     echo %green%Success%reset%
 )
 
+call :check_package_installation psutil
 call :check_package_installation asyncio
 call :check_package_installation dotenv
 call :check_package_installation pyppeteer

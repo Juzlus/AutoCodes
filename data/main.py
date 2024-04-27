@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 
 import os
+import re
+import psutil
+import signal
 import asyncio
 
 import keydrop
@@ -38,9 +41,10 @@ def get_golden_code_from_text(text):
     for arg in args:
         if len(arg) == 17:
             golden_code = arg.upper()
-            if golden_code not in used_codes:
-                used_codes.append(golden_code)
-                codes.append(golden_code)
+            if re.compile(r'^[A-Z0-9]+$').match(golden_code):
+                if golden_code not in used_codes:
+                    used_codes.append(golden_code)
+                    codes.append(golden_code)
     return
 
 
@@ -56,6 +60,21 @@ async def queue(page):
         print(f'{black}[{datetime.now().strftime("%d.%m.%Y, %H:%M:%S")}]{reset} {red}{golden_code} - {code_response["errorCode"]} - {code_response["info"]}{reset}')
     await asyncio.sleep(10)
     await queue(page)
+
+
+async def closeOldBrowser():
+    f = open('session//pids.txt', 'r+')
+    for line in f.readlines():
+        try:
+            pid = int(line)
+            process = psutil.Process(pid)
+            if process:
+                if "chrome" in process.name().lower():
+                    os.kill(pid, signal.SIGTERM)
+        except:
+            pass
+    f.truncate(0)
+    f.close()
 
 
 async def connecting():
@@ -114,6 +133,7 @@ async def main():
 
 if __name__ == "__main__":
     loop = asyncio.new_event_loop()
+    asyncio.run(closeOldBrowser())
     try:
         loop.run_until_complete(main())
     except Exception:

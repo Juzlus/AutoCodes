@@ -25,7 +25,18 @@ yellow='\033[33m'
 
 async def lunch_website(console_mode=True):
     cookies = get_cookies()
-    browser = await launch(headless=console_mode, defaultViewport=None, executablePath=os.getenv("BROWSER_PATH"))
+    browser = await launch(
+        headless=console_mode, 
+        defaultViewport=None, 
+        executablePath=os.getenv("BROWSER_PATH"),
+        devtools=False,
+        ignoreHTTPSErrors=True,
+        slowMo=0,
+        args=['--disable-gpu','--no-sandbox','--no-zygote','--disable-setuid-sandbox','--disable-accelerated-2d-canvas','--disable-dev-shm-usage', "--proxy-server='direct://'", "--proxy-bypass-list=*"]
+    )
+    f = open('session//pids.txt', 'a')
+    f.write(f'\n{str(browser.process.pid)}')
+    f.close()
     page = await browser.newPage()
     await stealth(page)
     await page.setUserAgent(os.getenv("CUSTOM_USER_AGENT"))

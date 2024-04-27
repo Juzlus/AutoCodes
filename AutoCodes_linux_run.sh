@@ -72,6 +72,7 @@ run_auto_codes() {
 
 water_mark
 check_python
+check_package_installation psutil
 check_package_installation asyncio
 check_package_installation dotenv
 check_package_installation pyppeteer
