@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import os
 import json
 import asyncio
 
@@ -7,21 +8,39 @@ from time import sleep
 from pyppeteer import launch
 from datetime import datetime
 from pyppeteer_stealth import stealth
+from dotenv import find_dotenv, load_dotenv
 
+timeout = 10 * 60 * 1000
+selectorElement = '#promo-code-modal'
 file_path_cookies = "session/cookies_keydrop.json"
+
+reset='\033[0m'
+cyan='\033[36m'
+red='\033[31m'
+black='\033[90m'
+magenta='\033[35m'
+green='\033[32m'
+yellow='\033[33m'
 
 
 async def lunch_website(console_mode=True):
-    browser = await launch(headless=console_mode, defaultViewport=None)
+    cookies = get_cookies()
+    browser = await launch(headless=console_mode, defaultViewport=None, executablePath=os.getenv("BROWSER_PATH"))
     page = await browser.newPage()
     await stealth(page)
+    await page.setUserAgent(os.getenv("CUSTOM_USER_AGENT"))
+    if console_mode and cookies:
+        await page.setCookie(*cookies)
+    await page.goto("https://key-drop.com/")
     return [browser, page]
 
 
 def get_cookies():
     f = open(file_path_cookies, 'r')
-    cookies = json.load(f)
-    return cookies
+    try:
+        return json.load(f)
+    except:
+        return None
 
 
 def save_cookies(cookies):
@@ -43,7 +62,7 @@ def import_jquery(page):
 
 
 def send_post(page, promo_code):
-    response = page.evaluate('''async function(goldenCode) {
+    return page.evaluate('''async function(goldenCode) {
             const url = 'https://key-drop.com/pl/apiData/Bonus/gold_activation_code';
             const jsonPayload = JSON.stringify({ promoCode: goldenCode });
     
@@ -62,51 +81,22 @@ def send_post(page, promo_code):
                 });
             });
         }''', promo_code)
-    return response
 
 
-async def check_code(code):
-    [browser, page] = await lunch_website()
-    cookies = get_cookies()
-    await page.setCookie(*cookies)
-    await page.goto("https://key-drop.com/")
-    try:
-        await page.waitForSelector('#confirm-login-modal')
-        await import_jquery(page)
-        await page.waitForSelector('#jquery_3_6_0')
-        sleep(2)
-        code_response = await send_post(page, code or "KSBNMH76GF5GHJKL8")
-        if code_response['errorCode'] == 'notLoggedIn':
-            raise Exception('notLoggedIn')
-    except Exception:
-        print('Your cookies expired!')
-        await browser.close()
-        await keydrop_login()
-        return False
-    if not code:
-        print('Success')
-    else:
-        if code_response['status']:
-            print(f'{datetime.now()} | {code} | {code_response["goldBonus"]} Gold')
-        else:
-            print(f'{datetime.now()} | {code} | {code_response["errorCode"]} - {code_response["info"]}')
-    await browser.close()
-    return True
-
-
-async def keydrop_login():
-    [browser, page] = await lunch_website(False)
-    await page.goto("https://key-drop.com/")
+async def keydrop_login(page):
     try:
         await page.goto("https://key-drop2.com/?q=")
-        await page.waitForSelector('#promo-code-modal', timeout=10 * 60 * 1000)
+        await page.waitForSelector(selectorElement, timeout=timeout)
         cookies = await page.cookies()
         save_cookies(cookies)
-        print('Configuration successful!')
     except Exception:
-        print('Login timeout! (You only have 10 minutes for this)')
-    await browser.close()
+        print(f'{black}[{datetime.now().strftime("%d.%m.%Y, %H:%M:%S")}]{reset} {red}Login timeout! (You only have 10 minutes for this){reset}')
 
 
-def run_check_code(golden_code=None):
-    asyncio.get_event_loop().run_until_complete(check_code(golden_code))
+async def check_code(page, code='KSBNMH76GF5GHJKL8'):
+    await page.waitForSelector(selectorElement, timeout=timeout)
+    await import_jquery(page)
+    await page.waitForSelector('#jquery_3_6_0', timeout=timeout)
+    sleep(2)
+    result = await send_post(page, code)
+    return result
