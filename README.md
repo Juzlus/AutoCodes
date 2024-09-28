@@ -31,6 +31,16 @@ Configuration variables can be found in the file: "**.env**".
 - **CUSTOM_USER_AGENT** - Custom user agent
 
 
+## ✨ Usage
+- [Keydrop API](https://key-drop.com)
+- [Python3](https://www.python.org/downloads/)
+- [psutil](https://pypi.org/project/psutil/)
+- [asyncio](https://pypi.org/project/asyncio/)
+- [pyppeteer](https://pypi.org/project/pyppeteer/)
+- [pyppeteer-stealth](https://pypi.org/project/pyppeteer-stealth/)
+- [python-dotenv](https://pypi.org/project/python-dotenv/)
+- [Telethon](https://github.com/LonamiWebs/Telethon)
+  
 ## 🔥 Screenshots
 
 ![Preview](https://github.com/Juzlus/KeydropPlusAutoCodes/assets/41649887/8a35865b-a906-49a6-9991-f1be063b1735)
